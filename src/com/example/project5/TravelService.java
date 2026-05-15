@@ -58,11 +58,25 @@ public class TravelService {
         Scanner scanner = new Scanner(System.in);
         TravelService service = new TravelService();
 
-        System.out.println("=== 城市高速环线出行检查系统 (签名: 黄昭展) ===");
-        System.out.print("请输入您的车牌号: ");
-        String licensePlate = scanner.nextLine();
+        System.out.println("========================================");
+        System.out.println("  城市高速环线出行检查系统 (签名: 黄昭展)");
+        System.out.println("  输入 exit 可随时退出程序");
+        System.out.println("========================================");
 
-        System.out.println(service.checkPassage(licensePlate));
+        while (true) {
+            System.out.print("\n请输入您的车牌号: ");
+            String licensePlate = scanner.nextLine();
+
+            // 主动退出：用户输入 exit（忽略大小写）时结束程序
+            if ("exit".equalsIgnoreCase(licensePlate.trim())) {
+                System.out.println("感谢使用，再见！");
+                break;
+            }
+
+            // 检查并显示结果
+            System.out.println(service.checkPassage(licensePlate));
+        }
+
         scanner.close();
     }
 }
