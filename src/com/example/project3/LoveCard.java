@@ -6,8 +6,9 @@ package com.example.project3;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * 字符画表白卡类：将图片转换为字符画输出
@@ -22,11 +23,17 @@ public class LoveCard {
      * @param imagePath 图片路径
      * @param newWidth 输出的字符画宽度
      */
-    public static void convertImageToAscii(String imagePath, int newWidth) {
+    public static void convertImageToAscii(String resourcePath, int newWidth) {
         try {
-            BufferedImage image = ImageIO.read(new File(imagePath));
+            // 从 classpath 加载图片资源（不依赖运行时的当前工作目录）
+            InputStream imageStream = LoveCard.class.getResourceAsStream(resourcePath);
+            if (imageStream == null) {
+                System.err.println("未找到资源文件: " + resourcePath);
+                return;
+            }
+            BufferedImage image = ImageIO.read(Objects.requireNonNull(imageStream));
             if (image == null) {
-                System.err.println("无法读取图片文件: " + imagePath);
+                System.err.println("无法读取图片资源: " + resourcePath);
                 return;
             }
 
@@ -51,7 +58,7 @@ public class LoveCard {
                     // 使用亮度公式计算灰度值
                     int gray = (int) (0.2126 * red + 0.7152 * green + 0.0722 * blue);
 
-                    // 将灰度值映射到字符索引
+                    // 将灰度值映射到字符索引1
                     int charIndex = (int) (gray / 255.0 * (ASCII_CHARS.length() - 1));
                     asciiArt.append(ASCII_CHARS.charAt(charIndex));
                 }
@@ -66,10 +73,10 @@ public class LoveCard {
     }
 
     public static void main(String[] args) {
-        // 示例：转换 resources 目录下的图片
-        String imagePath = "resources/sample.jpg";
-        int width = 80; 
+        // 从 classpath 加载 resources 目录下的图片
+        String resourcePath = "/com/example/resources/hole.jpg";
+        int width = 80;
         System.out.println("正在为您生成字符画表白卡...");
-        convertImageToAscii(imagePath, width);
+        convertImageToAscii(resourcePath, width);
     }
 }
